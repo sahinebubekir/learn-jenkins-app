@@ -2,9 +2,10 @@ pipeline {
     agent any
 
     environment{
-    FILE_NAME = 'index.html'
-    NETLIFY_SITE_ID = 'f5a31ab8-21d9-4bda-bee4-006846c32b13'
-    NETLIFY_AUTH_TOKEN = credentials('netlify-token')
+        FILE_NAME = 'index.html'
+        NETLIFY_SITE_ID = 'f5a31ab8-21d9-4bda-bee4-006846c32b13'
+        NETLIFY_AUTH_TOKEN = credentials('netlify-token')
+        
     }
     
 
@@ -80,7 +81,7 @@ pipeline {
             post{
                 always {
                     junit 'jest-results/junit.xml'
-                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright Local Report', reportTitles: '', useWrapperFileDirectly: true])
                     }
                 }
         }
@@ -106,6 +107,33 @@ pipeline {
                     '''
             }
         }
+
+        stage('Prod E2E'){
+             agent{
+                docker{
+                    //mcr.microsoft.com/playwright:v1.52.0-noble
+                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                    reuseNode true
+                    // It works but not the best way to do so agrs 'u root:root'
+                }
+            }
+
+            environment{
+                CI_ENVIRONMENT_URL = 'https://stellular-hotteok-11705a.netlify.app'
+            }
+
+                steps{
+                    sh '''
+                        npx playwright test --reporter=html
+                    '''
+                }
+                post{
+                    always {
+                        junit 'jest-results/junit.xml'
+                        publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright E2E Report', reportTitles: '', useWrapperFileDirectly: true])
+                        }
+                    }
+            }
        
     }
 
