@@ -32,7 +32,7 @@ pipeline {
         */
 
         stage('Run Tests'){
-            paralel{
+            parallel{
                  stage('Unit Test'){
                     agent{
                         docker{
