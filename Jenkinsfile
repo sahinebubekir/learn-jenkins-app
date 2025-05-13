@@ -30,22 +30,23 @@ pipeline {
         }
         
         */
-        
 
-        stage('Test'){
-             agent{
-                docker{
-                    image 'node:18-alpine'
-                    reuseNode true
+        stage('Run Tests'){
+            paralel{
+                 stage('Unit Test'){
+                    agent{
+                        docker{
+                            image 'node:18-alpine'
+                            reuseNode true
                 }
             }
 
             steps{
-            sh '''
-            echo "Test Stage"
-            test -f build/$FILE_NAME
-            npm test
-            '''
+                sh '''
+                    echo "Test Stage"
+                    test -f build/$FILE_NAME
+                    npm test
+                '''
             }
         
         
@@ -62,15 +63,20 @@ pipeline {
             }
 
             steps{
-            sh '''
-            echo "End To End Test Stage"
-            npm install serve
-            node_modules/.bin/serve -s build &
-            sleep 10
-            npx playwright test --reporter=html
-            '''
+                sh '''
+                    echo "End To End Test Stage"
+                    npm install serve
+                    node_modules/.bin/serve -s build &
+                    sleep 10
+                    npx playwright test --reporter=html
+                '''
             }
         }
+            }
+        }
+        
+
+       
     }
 
     post{
