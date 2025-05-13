@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     environment{
-        FILE_NAME = 'index.html'
         NETLIFY_SITE_ID = 'f5a31ab8-21d9-4bda-bee4-006846c32b13'
         NETLIFY_AUTH_TOKEN = credentials('netlify-token')
         
@@ -48,7 +47,7 @@ pipeline {
             steps{
                 sh '''
                     echo "Test Stage"
-                    test -f build/$FILE_NAME
+                    test -f build/index.html
                     npm test
                 '''
             }
