@@ -57,14 +57,15 @@ pipeline {
                     //mcr.microsoft.com/playwright:v1.52.0-noble
                     image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
                     reuseNode true
+                    // It works but not the best way to do so agrs 'u root:root'
                 }
             }
 
             steps{
             sh '''
             echo "End To End Test Stage"
-            npm install -g serve
-            serge -s build
+            npm install serve
+            node_modules/.bin/serve -s build
             npx playwright test
             '''
             }
