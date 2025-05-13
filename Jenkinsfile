@@ -1,7 +1,10 @@
 pipeline {
     agent any
 
+    environment{
     FILE_NAME = 'index.html'
+    }
+    
 
     stages {
         stage('Build') {
