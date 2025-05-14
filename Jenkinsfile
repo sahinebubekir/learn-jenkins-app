@@ -116,6 +116,7 @@ pipeline {
                     '''
             }
         }
+}
         
         stage('Deploy Production') {
                 agent{
