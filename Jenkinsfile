@@ -108,15 +108,14 @@ pipeline {
         }
 
         stage('Approval') {
-          
-            }
+            
                 steps {
                     sh '''
                       input message: 'Do you wish to deploy to production?', ok: 'Yes, i am sure.'
                     '''
             }
         }
-}
+
         
         stage('Deploy Production') {
                 agent{
